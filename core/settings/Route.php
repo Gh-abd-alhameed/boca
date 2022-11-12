@@ -1,10 +1,10 @@
 <?php
 
-namespace boca\core\settings;
+namespace boca\mvc\core\settings;
 
 
-use boca\core\settings\RouteInit;
-use boca\core\Traits\RouteHand;
+use boca\mvc\core\settings\RouteInit;
+use boca\mvc\core\Traits\RouteHand;
 
 class Route
 {

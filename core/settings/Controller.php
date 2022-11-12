@@ -1,7 +1,7 @@
 <?php
 
 
-namespace boca\core\settings;
+namespace boca\mvc\core\settings;
 
 
 class Controller

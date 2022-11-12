@@ -1,6 +1,6 @@
 <?php
 
-namespace boca\core\settings;
+namespace boca\mvc\core\settings;
 
 abstract class RequestHandler
 {

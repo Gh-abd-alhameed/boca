@@ -1,8 +1,8 @@
 <?php
 
-namespace boca\core\settings;
+namespace boca\mvc\core\settings;
 
-use boca\core\settings\RequestHandler;
+use boca\mvc\core\settings\RequestHandler;
 
 class Request extends RequestHandler
 {

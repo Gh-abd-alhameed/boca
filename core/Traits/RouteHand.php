@@ -1,6 +1,6 @@
 <?php
 
-namespace boca\core\Traits;
+namespace boca\mvc\core\Traits;
 
 trait RouteHand
 

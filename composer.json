@@ -15,7 +15,8 @@
   },
   "autoload": {
     "psr-4": {
-      "boca\\": "core"
+      "boca\\mvc\\core\\settings\\": "core/settings",
+      "boca\\mvc\\core\\Traits\\": "core/Traits"
     },
     "files": [
       "init.php"

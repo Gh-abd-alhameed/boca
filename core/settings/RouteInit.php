@@ -1,8 +1,8 @@
 <?php
 
-namespace boca\core\settings;
+namespace boca\mvc\core\settings;
 
-use boca\core\Traits\RouteHand;
+use boca\mvc\core\Traits\RouteHand;
 
 class RouteInit
 {
@@ -133,7 +133,7 @@ class RouteInit
     function __destruct()
     {
         if (!$this->handled) {
-            return include views . '/404.php';
+            return require __DIR__ . '/../../pages/404.php';
         }
     }
 }
