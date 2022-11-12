@@ -1,11 +1,10 @@
 {
   "name": "boca/mvc",
   "description": "description",
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "license": "MIT",
   "type": "library",
   "version": "1.0.0",
-  "prefer-stable": true,
   "authors": [
     {
       "name": "Ghadeer Abd Alhameed",
