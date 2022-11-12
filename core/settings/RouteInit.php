@@ -23,7 +23,10 @@ class RouteInit
 
     {
         $this->urlRoute = $routeName;
-        $uri = str_replace(Init::$app["url"], "", strip_all_tags($_SERVER['REQUEST_URI']));
+        $uri = strip_all_tags($_SERVER['REQUEST_URI']);
+        if (Init::$app["url"] != "/") {
+            $uri = str_replace(Init::$app["url"], "", $uri);
+        }
         $url = explode("?", $uri);
         $url = explode("/", $url[0]);
         $routeName = explode("/", $routeName);
