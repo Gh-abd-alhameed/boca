@@ -90,7 +90,7 @@ function view(string $view, array $data = [])
         }
     }
     $view = explode(".", $view);
-    $view = views . "/" . join("/", $view) . ".php";
+    $view = __DIR__ . "/../../../resource/views" . join("/", $view) . ".php";
     if (!file_exists($view)) {
         if (Init::$app["debug"]) {
             die(__FILE__ . "|Line:" . __LINE__ . "|Message: (view) file Not Found");
