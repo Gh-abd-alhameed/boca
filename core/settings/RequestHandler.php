@@ -4,30 +4,48 @@ namespace boca\mvc\core\settings;
 
 abstract class RequestHandler
 {
-    public  $headers;
-    public   $json;
-    public   $body;
-    public   $query;
-    public   $param;
-    public   $input;
+    public static $headers;
+    public static $json;
+    public static $body;
+    public static $query;
+    public static $param;
+    public static $input;
+    public static $uri;
+    public static $http;
+    public static $host;
+
     public function __construct()
     {
-        $this->param = [];
-        $this->query = $_GET;
-        $this->body = $_POST;
-        $this->input = $_REQUEST;
-        $this->json = file_get_contents("php://input");
-        $this->headers = apache_request_headers();
+
     }
-    abstract  function query();
 
-    abstract  function param();
+    public static function Init()
+    {
+        self::$body = $_POST;
+        self::$uri = $_SERVER["REQUEST_URI"];
+        self::$http = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https://" : "http://";
+        self::$host = $_SERVER["HTTP_HOST"];
+        self::$query = $_GET;
+        self::$param = [];
+        self::$json = file_get_contents("php://input");
+        self::$headers = apache_request_headers();
+    }
 
-    abstract  function input();
+    abstract static function query();
 
-    abstract  function headers();
+    abstract static  function host();
 
-    abstract  function json();
+    abstract static  function http();
 
-    abstract  function body();
+    abstract static  function uri();
+
+    abstract static  function param();
+
+    abstract static  function input();
+
+    abstract static  function headers();
+
+    abstract static  function json();
+
+    abstract static  function body();
 }

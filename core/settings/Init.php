@@ -4,12 +4,14 @@
 namespace boca\mvc\core\settings;
 
 use boca\mvc\core\settings\Route;
+use boca\mvc\core\settings\Locale;
 
 
 abstract class Init
 {
     public static array $app = [];
     public $Route;
+    public $Locale;
     public array $initRotePath;
 
 
@@ -18,9 +20,10 @@ abstract class Init
         self::$app = $app;
     }
 
-
     public function init()
     {
+        Request::Init();
+        Locale::Init();
         $this->Route = new Route;
         $this->routeFile();
     }
@@ -47,6 +50,7 @@ abstract class Init
         foreach ($path as $value) {
             require $value;
         }
+        unset($path);
     }
 
 }

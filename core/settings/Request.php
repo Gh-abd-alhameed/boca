@@ -6,28 +6,48 @@ use boca\mvc\core\settings\RequestHandler;
 
 class Request extends RequestHandler
 {
-    public   function query()
+    public static function uri()
     {
-        return $this->query;
+        return self::$uri;
     }
-    public   function param()
+
+    public static function host()
     {
-        return $this->param;
+        return self::$host;
     }
-    public   function input()
+
+    public static function http()
     {
-        return $this->input;
+        return self::$http;
     }
-    public   function headers()
+
+    public static function query()
     {
-        return  $this->headers;
+        return self::$query;
     }
-    public   function json()
+
+    public static function param()
     {
-        return $this->json;
+        return self::$param;
     }
-    public   function body()
+
+    public static function input()
     {
-        return $this->body;
+        return self::$input;
+    }
+
+    public static function headers()
+    {
+        return self::$headers;
+    }
+
+    public static function json()
+    {
+        return self::$json;
+    }
+
+    public static function body()
+    {
+        return self::$body;
     }
 }
