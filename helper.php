@@ -30,9 +30,9 @@ function url_site(bool $prefix_Locale = false)
     $url_site = Request::http() . Request::host();
     if ($prefix_Locale) {
         $locale = Locale::get();
-        return $url_site . Init::$app["available_locales"][$locale]["prefix"];
+        return $url_site . Init::$app["url"] .  Init::$app["available_locales"][$locale]["prefix"];
     }
-    return $url_site;
+    return $url_site . Init::$app["url"];
 }
 
 function url(string $path)

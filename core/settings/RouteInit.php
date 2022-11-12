@@ -7,24 +7,26 @@ use boca\mvc\core\Traits\RouteHand;
 class RouteInit
 {
     use RouteHand;
-    private  bool $handled = false;
+
+    private bool $handled = false;
 
     public $storege;
     public $param = [];
     public $Route_Name = [];
     public $urlRoute;
+
     function __construct()
     {
     }
 
-    public  function routeHundel(string $routeName, $callback)
+    public function routeHundel(string $routeName, $callback)
 
     {
         $this->urlRoute = $routeName;
-        $uri = strip_all_tags($_SERVER['REQUEST_URI']);
-        $url =  explode("?",  $uri);
+        $uri = str_replace(Init::$app["url"], "", strip_all_tags($_SERVER['REQUEST_URI']));
+        $url = explode("?", $uri);
         $url = explode("/", $url[0]);
-        $routeName  = explode("/", $routeName);
+        $routeName = explode("/", $routeName);
 
         if (RouteHand::check($url, $routeName)) {
 
@@ -59,24 +61,24 @@ class RouteInit
             if (is_string($callback)) :
 
                 $this->string_handler($callback);
-                return  $this;
+                return $this;
 
             elseif (is_array($callback)) :
 
                 $this->handel_array_class($callback);
-                return  $this;
+                return $this;
             else :
 
                 $this->handled = true;
 
                 $callback(...array_values($this->param));
 
-                return  $this;
+                return $this;
             endif;
 
         endif;
 
-        return  $this;
+        return $this;
     }
 
 
@@ -91,6 +93,7 @@ class RouteInit
         ${$callback[1]}->$function(...array_values($this->param));
         return;
     }
+
     public function string_handler($string)
 
     {
@@ -107,7 +110,7 @@ class RouteInit
         }
     }
 
-    public  function class_handeler($callback)
+    public function class_handeler($callback)
 
     {
         $exp = explode('@', $callback);
@@ -125,11 +128,13 @@ class RouteInit
         $class->$fanction(...array_values($this->param));
         return;
     }
+
     function name($routeName)
     {
         $this->Route_Name[$routeName] = $this->urlRoute;
         return $this;
     }
+
     function __destruct()
     {
         if (!$this->handled) {
