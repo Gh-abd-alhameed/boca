@@ -24,11 +24,26 @@ class RouteInit
     {
         $this->urlRoute = $routeName;
         $uri = strip_all_tags($_SERVER['REQUEST_URI']);
+
         if (Init::$app["url"] != "/") {
             $uri = str_replace(Init::$app["url"], "", $uri);
         }
+
         $url = explode("?", $uri);
-        $url = explode("/", $url[0]);
+
+        if (!RouteHand::checkSlashes($url[0])) {
+
+            $url = RouteHand::addSlashes($url[0]);
+        } else {
+            $url = $url[0];
+        }
+
+        if (!RouteHand::checkSlashes($routeName)) {
+            $routeName = RouteHand::addSlashes($routeName);
+        }
+
+        $url = explode("/", $url);
+
         $routeName = explode("/", $routeName);
 
         if (RouteHand::check($url, $routeName)) {

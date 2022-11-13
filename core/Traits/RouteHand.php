@@ -18,5 +18,12 @@ trait RouteHand
             return true;
 
         endif;
+        
+    }
+    public function addSlashes($path){
+        return $path . "/";
+    }
+    public function checkSlashes($path){
+        return preg_match("/\/$/", $path);
     }
 }
