@@ -3,7 +3,8 @@
 use boca\mvc\core\settings\Init;
 use boca\mvc\core\settings\Locale;
 use boca\mvc\core\settings\Request;
-
+use \boca\mvc\core\settings\Response;
+use \boca\mvc\core\settings\Redirect;
 function strip_all_tags($string, $remove_breaks = false)
 {
     $string = preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', $string);
@@ -16,6 +17,15 @@ function strip_all_tags($string, $remove_breaks = false)
     return trim($string);
 }
 
+function response()
+{
+    return new Response;
+}
+
+function redierct(string $from = "", string $to = "")
+{
+    return new Redierct($from, $to);
+}
 function _token_app_meta()
 {
     if (!isset($_SESSION['_token_app'])) {
