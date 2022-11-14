@@ -2,7 +2,7 @@
 
 $http = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https://" : "http://";
 
-$site_url =  $_SERVER["HTTP_HOST"];
+$site_url =  "";
 
 define('ROOT', $_SERVER['DOCUMENT_ROOT']);
 

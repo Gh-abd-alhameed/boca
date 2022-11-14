@@ -24,7 +24,7 @@ function response()
 
 function redierct(string $from = "", string $to = "")
 {
-    return new Redierct($from, $to);
+    return new Redirect($from, $to);
 }
 function _token_app_meta()
 {
