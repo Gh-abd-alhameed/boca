@@ -6,157 +6,157 @@ use boca\mvc\core\Traits\RouteHand;
 
 class RouteInit
 {
-    use RouteHand;
+	use RouteHand;
 
-    private bool $handled = false;
+	private bool $handled = false;
 
-    public $storege;
-    public $param = [];
-    public $Route_Name = [];
-    public $urlRoute;
+	public $storege;
+	public $param = [];
+	public $Route_Name = [];
+	public $urlRoute;
 
-    function __construct()
-    {
-    }
+	function __construct()
+	{
+	}
 
-    public function routeHundel(string $routeName, $callback)
+	public function routeHundel(string $routeName, $callback)
 
-    {
-        $this->urlRoute = $routeName;
-        $uri = strip_all_tags($_SERVER['REQUEST_URI']);
+	{
+		$this->urlRoute = $routeName;
+		$uri = strip_all_tags($_SERVER['REQUEST_URI']);
 
-        if (Init::$app["url"] != "/") {
-            $uri = str_replace(Init::$app["url"], "", $uri);
-        }
+		if (Init::$app["url"] != "/") {
+			$uri = str_replace(Init::$app["url"], "", $uri);
+		}
 
-        $url = explode("?", $uri);
+		$url = explode("?", $uri);
 
-        if (!RouteHand::checkSlashes($url[0])) {
+		if (!RouteHand::checkSlashes($url[0])) {
 
-            $url = RouteHand::addSlashes($url[0]);
-        } else {
-            $url = $url[0];
-        }
+			$url = RouteHand::addSlashes($url[0]);
+		} else {
+			$url = $url[0];
+		}
 
-        if (!RouteHand::checkSlashes($routeName)) {
-            $routeName = RouteHand::addSlashes($routeName);
-        }
+		if (!RouteHand::checkSlashes($routeName)) {
+			$routeName = RouteHand::addSlashes($routeName);
+		}
 
-        $url = explode("/", $url);
+		$url = explode("/", $url);
 
-        $routeName = explode("/", $routeName);
+		$routeName = explode("/", $routeName);
+		
+		if (RouteHand::check($url, $routeName)) {
 
-        if (RouteHand::check($url, $routeName)) {
+			foreach ($routeName as $key => $value) {
 
-            foreach ($routeName as $key => $value) {
+				if (strpos($value, "}")) {
+					if (empty($url[$key])) {
+						break;
+					}
+					$routeName[$key] = $url[$key];
 
-                if (strpos($value, "}")) {
-                    if (empty($url[$key])) {
-                        break;
-                    }
-                    $routeName[$key] = $url[$key];
+					$key_param = str_replace(array("{", "}"), "", $value);
 
-                    $key_param = str_replace(array("{", "}"), "", $value);
+					$this->param[$key_param] = $url[$key];
 
-                    $this->param[$key_param] = $url[$key];
+					continue;
+				}
 
-                    continue;
-                }
+				if ($value != $url[$key]) {
 
-                if ($value != $url[$key]) {
+					return $this;
+				}
+			}
+		};
 
-                    return $this;
-                }
-            }
-        };
+		$routeName = join("/", $routeName);
 
-        $routeName = join("/", $routeName);
+		$url = join("/", $url);
 
-        $url = join("/", $url);
+		if ($url == $routeName) :
 
-        if ($url == $routeName) :
+			if (is_string($callback)) :
 
-            if (is_string($callback)) :
+				$this->string_handler($callback);
+				return $this;
 
-                $this->string_handler($callback);
-                return $this;
+			elseif (is_array($callback)) :
 
-            elseif (is_array($callback)) :
+				$this->handel_array_class($callback);
+				return $this;
+			else :
 
-                $this->handel_array_class($callback);
-                return $this;
-            else :
+				$this->handled = true;
 
-                $this->handled = true;
+				$callback(...array_values($this->param));
 
-                $callback(...array_values($this->param));
+				return $this;
+			endif;
 
-                return $this;
-            endif;
+		endif;
 
-        endif;
-
-        return $this;
-    }
+		return $this;
+	}
 
 
-    public function handel_array_class($callback)
-    {
-        ${$callback[1]} = new $callback[0];
+	public function handel_array_class($callback)
+	{
+		${$callback[1]} = new $callback[0];
 
-        $function = $callback[1];
+		$function = $callback[1];
 
-        $this->handled = true;
+		$this->handled = true;
 
-        ${$callback[1]}->$function(...array_values($this->param));
-        return;
-    }
+		${$callback[1]}->$function(...array_values($this->param));
+		return;
+	}
 
-    public function string_handler($string)
+	public function string_handler($string)
 
-    {
-        if (strpos($string, '@')) {
+	{
+		if (strpos($string, '@')) {
 
-            $this->handled = true;
+			$this->handled = true;
 
-            return $this->class_handeler($string);
-        } else {
+			return $this->class_handeler($string);
+		} else {
 
-            $this->handled = true;
+			$this->handled = true;
 
-            return $string;
-        }
-    }
+			return $string;
+		}
+	}
 
-    public function class_handeler($callback)
+	public function class_handeler($callback)
 
-    {
-        $exp = explode('@', $callback);
+	{
+		$exp = explode('@', $callback);
 
-        $className = $exp[0];
+		$className = $exp[0];
 
-        $fanction = $exp[1];
+		$fanction = $exp[1];
 
-        $this->handled = true;
+		$this->handled = true;
 
 //        require __DIR__ . "/../../../../../app/http" . $className . '.php';
 
-        $class = new $className;
+		$class = new $className;
 
-        $class->$fanction(...array_values($this->param));
-        return;
-    }
+		$class->$fanction(...array_values($this->param));
+		return;
+	}
 
-    function name($routeName)
-    {
-        $this->Route_Name[$routeName] = $this->urlRoute;
-        return $this;
-    }
+	function name($routeName)
+	{
+		$this->Route_Name[$routeName] = $this->urlRoute;
+		return $this;
+	}
 
-    function __destruct()
-    {
-        if (!$this->handled) {
-            return require __DIR__ . '/../../pages/404.php';
-        }
-    }
+	function __destruct()
+	{
+		if (!$this->handled) {
+			return require __DIR__ . '/../../pages/404.php';
+		}
+	}
 }
