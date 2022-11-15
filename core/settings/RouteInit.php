@@ -17,25 +17,39 @@ class RouteInit
 
 	function __construct()
 	{
+		$uri = parse_url(strip_all_tags($_SERVER["REQUEST_URI"]))["path"];
+		if (Init::$app["url"] != "/") {
+			$uri = str_replace(Init::$app["url"], "", $uri);
+		}
+		foreach (Init::$app["static_file"] as $key => $value) {
+			$prefix = str_replace("/", "\/", $value["prefix"]);
+			if (preg_match("/^$prefix(.*)\.(" . join("|", Init::$app["file_extension"]) . ")$/", $uri)) {
+				if (file_exists($_SERVER["DOCUMENT_ROOT"] . Init::$app["url"] . preg_replace("/\/$/", "", $uri))) {
+					$this->handled = true;
+					echo file_get_contents($_SERVER["DOCUMENT_ROOT"] . Init::$app["url"] . $uri);
+					return "";
+				}
+			}
+		}
 	}
 
 	public function routeHundel(string $routeName, $callback)
 
 	{
 		$this->urlRoute = $routeName;
-		$uri = strip_all_tags($_SERVER['REQUEST_URI']);
+		$uri =parse_url( strip_all_tags($_SERVER['REQUEST_URI']))["path"];
 
 		if (Init::$app["url"] != "/") {
 			$uri = str_replace(Init::$app["url"], "", $uri);
 		}
 
-		$url = explode("?", $uri);
+		$url = $uri;
 
-		if (!RouteHand::checkSlashes($url[0])) {
+		if (!RouteHand::checkSlashes($url)) {
 
-			$url = RouteHand::addSlashes($url[0]);
+			$url = RouteHand::addSlashes($url);
 		} else {
-			$url = $url[0];
+			$url = $url;
 		}
 
 		if (!RouteHand::checkSlashes($routeName)) {
@@ -45,7 +59,7 @@ class RouteInit
 		$url = explode("/", $url);
 
 		$routeName = explode("/", $routeName);
-		
+
 		if (RouteHand::check($url, $routeName)) {
 
 			foreach ($routeName as $key => $value) {

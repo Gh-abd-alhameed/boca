@@ -103,7 +103,7 @@ function view(string $view, array $data = [])
 	}
 	$view = explode(".", $view);
 	
-		$view = $_SERVER["DOCUMENT_ROOT"] . Init::$app["url"] . "/resource/views/" . join("/", $view) . ".php";
+	$view = $_SERVER["DOCUMENT_ROOT"] . Init::$app["url"] . "/resource/views/" . join("/", $view) . ".php";
 
 	if (!file_exists($view)) {
 		if (Init::$app["debug"]) {
