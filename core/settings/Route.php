@@ -15,7 +15,6 @@ class Route
     public function __construct()
     {
         self::$app = new RouteInit;
-
     }
 
     public static function get(string $routeName, $callback)
