@@ -23,7 +23,7 @@ class RouteInit
 		}
 		foreach (Init::$app["static_file"] as $key => $value) {
 			$prefix = str_replace("/", "\/", $value["prefix"]);
-			if (preg_match("/^$prefix(.*)\.(" . join("|", Init::$app["file_extension"]) . ")$/", $uri)) {
+			if (preg_match("/^$prefix(.*)\.(" . join("|", $value["extension"]) . ")$/", $uri)) {
 				if (file_exists($_SERVER["DOCUMENT_ROOT"] . Init::$app["url"] . preg_replace("/\/$/", "", $uri))) {
 					$this->handled = true;
 					echo file_get_contents($_SERVER["DOCUMENT_ROOT"] . Init::$app["url"] . $uri);
