@@ -3,7 +3,8 @@
 namespace boca\mvc\core\settings;
 
 use boca\mvc\core\Traits\RouteHand;
-
+use boca\mvc\core\settings\Response;
+use boca\mvc\core\settings\Request;
 class RouteInit
 {
 	use RouteHand;
@@ -37,7 +38,7 @@ class RouteInit
 
 	{
 		$this->urlRoute = $routeName;
-		$uri =parse_url( strip_all_tags($_SERVER['REQUEST_URI']))["path"];
+		$uri = parse_url(strip_all_tags($_SERVER['REQUEST_URI']))["path"];
 
 		if (Init::$app["url"] != "/") {
 			$uri = str_replace(Init::$app["url"], "", $uri);
@@ -165,6 +166,42 @@ class RouteInit
 	{
 		$this->Route_Name[$routeName] = $this->urlRoute;
 		return $this;
+	}
+
+	public function maddleware($middleware, $callback = null)
+	{
+		if (is_string($middleware)) {
+			$this->maddlewareIsString($middleware, $callback);
+		}
+		if (is_array($middleware)) {
+			$this->maddlewareIsArray($middleware, $callback);
+		}
+		return $this;
+	}
+
+	public function maddlewareIsArray($middleware, $callback)
+	{
+		$kernal = new \app\http\Kernal;
+		foreach ($middleware as $key => $value) {
+			$middleware = $kernal->boot()["middleware"][$value];
+			$check = new $middleware;
+			$check->Check(Request() , Response());
+			if ($callback != null) {
+				$callback();
+			}
+
+		}
+	}
+
+	public function maddlewareIsString($middleware, $callback)
+	{
+		$kernal = new \app\http\Kernal;
+		$middleware = $kernal->boot()["middleware"][$middleware];
+		$check = new $middleware;
+		$check->Check(Request() , Response() );
+		if ($callback != null) {
+			$callback();
+		}
 	}
 
 	function __destruct()
