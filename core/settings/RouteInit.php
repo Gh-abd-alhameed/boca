@@ -5,6 +5,7 @@ namespace boca\mvc\core\settings;
 use boca\mvc\core\Traits\RouteHand;
 use boca\mvc\core\settings\Response;
 use boca\mvc\core\settings\Request;
+
 class RouteInit
 {
 	use RouteHand;
@@ -27,7 +28,7 @@ class RouteInit
 			if (preg_match("/^$prefix(.*)\.(" . join("|", $value["extension"]) . ")$/", $uri)) {
 				if (file_exists($_SERVER["DOCUMENT_ROOT"] . Init::$app["url"] . preg_replace("/\/$/", "", $uri))) {
 					$this->handled = true;
-					echo file_get_contents($_SERVER["DOCUMENT_ROOT"] . Init::$app["url"] . $uri);
+					echo file_get_contents(dir_site($uri));
 					return "";
 				}
 			}
@@ -185,7 +186,7 @@ class RouteInit
 		foreach ($middleware as $key => $value) {
 			$middleware = $kernal->boot()["middleware"][$value];
 			$check = new $middleware;
-			$check->Check(Request() , Response());
+			$check->Check(Request(), Response());
 			if ($callback != null) {
 				$callback();
 			}
@@ -195,10 +196,11 @@ class RouteInit
 
 	public function maddlewareIsString($middleware, $callback)
 	{
+
 		$kernal = new \app\http\Kernal;
 		$middleware = $kernal->boot()["middleware"][$middleware];
 		$check = new $middleware;
-		$check->Check(Request() , Response() );
+		$check->Check(Request(), Response());
 		if ($callback != null) {
 			$callback();
 		}

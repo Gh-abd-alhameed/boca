@@ -37,7 +37,12 @@ function _token_app_meta()
 	echo '<meta  name="_token" content="' . $_SESSION['_token_app'] . '">';
 }
 
-function url_site(bool $prefix_Locale = false)
+function dir_site($path=''): string
+{
+	return $_SERVER["DOCUMENT_ROOT"] . Init::$app["url"] . $path;
+}
+
+function url_site(bool $prefix_Locale = false): string
 {
 	$url_site = Request::http() . Request::host();
 	if ($prefix_Locale) {
@@ -75,12 +80,23 @@ function app(string $key = "")
 
 function component(string $name, array $data = [])
 {
-	$name = str_replace(".php", "", $name);
+	if (!is_string($name)) {
+		if (Init::$app["debug"]) {
+			die(__FILE__ . "|Line:" . __LINE__ . "|Message: component name most be String");
+		}
+	}
 	if (empty($name)) {
 		if (Init::$app["debug"]) {
 			die(__FILE__ . "|Line:" . __LINE__ . "|Message: component most be not empty");
 		}
 	}
+	$path = explode(".", $name);
+
+	$name_file = realpath($path);
+	var_dump($path);
+	die();
+	$name = str_replace(".php", "", $name);
+
 	if (!file_exists(components . "/" . $name . ".php")) {
 		if (Init::$app["debug"]) {
 			die(__FILE__ . "|Line:" . __LINE__ . "|Message: component Not Found");
@@ -102,8 +118,8 @@ function view(string $view, array $data = [])
 		}
 	}
 	$view = explode(".", $view);
-	
-	$view = $_SERVER["DOCUMENT_ROOT"] . Init::$app["url"] . "/resource/views/" . join("/", $view) . ".php";
+
+	$view = dir_site("/resource/views/" . join("/", $view) . ".php") ;
 
 	if (!file_exists($view)) {
 		if (Init::$app["debug"]) {
@@ -115,7 +131,6 @@ function view(string $view, array $data = [])
 			${$key} = $value;
 		}
 	}
-
 	$view = require $view;
 	return;
 }
@@ -148,7 +163,7 @@ function route($name, $data = [])
 }
 
 
-function assets($path)
+function puplic($path)
 {
 
 	if (!is_string($path)) {
@@ -161,7 +176,7 @@ function assets($path)
 			die(__FILE__ . "|Line:" . __LINE__ . "|Message: (assets) " . ROOT . "/assets$path" . " File Not Found");
 		}
 	}
-	echo URL_ROOT . "/assets$path";
+	echo URL_ROOT . "/puplic$path";
 }
 
 
@@ -199,4 +214,18 @@ function _trans(string $Keyword, string $default = "")
 		}
 	}
 	return $traans_file[$key_trans];
+}
+
+function saveImage($path_image, $path_output, $name_output)
+{
+	$image = imagecreatefromstring(file_get_contents($path_image));
+	ob_start();
+	imagejpeg($image, null, 100);
+	$cont = ob_get_contents();
+	ob_end_clean();
+	imagedestroy($image);
+	$content = imagecreatefromstring($cont);
+	$output = $path_save . $name_output;
+	imagewebp($content, $output);
+	imagedestroy($content);
 }
